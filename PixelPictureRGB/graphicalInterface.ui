@@ -6,9 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>900</width>
+    <height>700</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>900</width>
+    <height>700</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>PIxelPictureRGB</string>
@@ -45,19 +51,170 @@
          <height>0</height>
         </size>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
+       <layout class="QVBoxLayout" name="verticalLayout_4">
         <item>
-         <widget class="QLabel" name="l_image">
-          <property name="maximumSize">
-           <size>
-            <width>1000</width>
-            <height>800</height>
-           </size>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Preferred</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Preferred</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+            <item>
+             <widget class="QLabel" name="l_image">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>1920</width>
+                <height>1080</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Preferred</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeType">
+             <enum>QSizePolicy::Preferred</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
+           <widget class="QWidget" name="widget" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>180</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <widget class="QLabel" name="l_percentScale">
+             <property name="geometry">
+              <rect>
+               <x>48</x>
+               <y>1</y>
+               <width>91</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Percent scale</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="b_scalingUp">
+             <property name="geometry">
+              <rect>
+               <x>140</x>
+               <y>0</y>
+               <width>40</width>
+               <height>30</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>+</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="b_downSkaling">
+             <property name="geometry">
+              <rect>
+               <x>1</x>
+               <y>1</y>
+               <width>40</width>
+               <height>30</height>
+              </rect>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>-</string>
+             </property>
+            </widget>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
@@ -65,17 +222,6 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>25</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
  <connections/>

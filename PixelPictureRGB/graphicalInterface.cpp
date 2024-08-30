@@ -7,7 +7,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->b_selectImage, &QPushButton::clicked, this, &MainWindow::selectFile);
+    connect(ui->b_selectImage, &QPushButton::clicked, this, &MainWindow::imageSelection);
+    connect(ui->b_downSkaling, &QPushButton::clicked, this, &MainWindow::scaleImage);
+    connect(ui->b_scalingUp, &QPushButton::clicked, this, &MainWindow::scaleImage);
 }
 
 MainWindow::~MainWindow()
@@ -15,7 +17,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::selectFile()
+void MainWindow::imageSelection()
 {
     QString imagePath = QFileDialog::getOpenFileName(this, "Select file", "");
 
@@ -24,12 +26,11 @@ void MainWindow::selectFile()
         QMessageBox::warning(this, "Invalid data", "The editor supports only jpeg and png image format");
         return;
     }
-
     ui->stackedWidget->setCurrentIndex(1);
-    showImage(imagePath);
+    displayImage(imagePath);
 }
 
-void MainWindow::showImage(const QString &path)
+void MainWindow::displayImage(const QString &path)
 {
     QPixmap pix;
     if (!pix.load(path))
@@ -37,17 +38,33 @@ void MainWindow::showImage(const QString &path)
         QMessageBox::warning(this, "Error", "Failed to load image");
         return;
     }
-
-    ui->l_image->setPixmap(pix);
-    ui->l_image->setScaledContents(true);
-    int labelWidth = ui->l_image->width();
-    double factor = double(labelWidth) / pix.width();
-    ui->l_image->setFixedSize(pix.size() * factor);
+    originalPix = pix;
+    factor = 1.0;
+    imageScaling(factor);
 }
 
+void MainWindow::scaleImage()
+{
+    QPushButton *button = (QPushButton *)sender();
+    int percentScale = ui->l_percentScale->text().remove('%').toInt();
 
+    if (button->text() == "+" && percentScale < 200)
+    {
+        percentScale += 5;
+        factor += 0.1;
+    }
+    else if (button->text() == "-" && percentScale > 0 && factor > 0.2)
+    {
+        percentScale -= 5;
+        factor -= 0.1;
+    }
+    ui->l_percentScale->setText(QString::number(percentScale) + "%");
+    imageScaling(factor);
+}
 
-
-
-
-
+void MainWindow::imageScaling(double scaleFactor)
+{
+    QPixmap scaledPixmap = originalPix.scaled(originalPix.size() * scaleFactor, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    ui->l_image->setPixmap(scaledPixmap);
+    ui->l_image->setAlignment(Qt::AlignCenter);
+}

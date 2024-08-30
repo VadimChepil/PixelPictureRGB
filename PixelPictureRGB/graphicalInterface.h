@@ -5,6 +5,7 @@
 #include <QFileDialog>
 #include <QPixmap>
 #include <QMessageBox>
+#include <QPushButton>
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -21,10 +22,14 @@ public:
     ~MainWindow();
 
 private slots:
-    void selectFile();
-    void showImage(const QString &path);
+    void imageSelection();
+    void displayImage(const QString &path);
+    void scaleImage();
+    void imageScaling(double scaleFactor);
 
 private:
     Ui::MainWindow *ui;
+    QPixmap originalPix;
+    double factor;
 };
 #endif // MAINWINDOW_H

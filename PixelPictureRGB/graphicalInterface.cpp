@@ -17,6 +17,58 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::wheelEvent(QWheelEvent *event)
+{
+    int percentScale = ui->l_percentScale->text().remove('%').toInt();
+    if (event->angleDelta().y() > 0 && percentScale < 200)
+    {
+        percentScale += 5;
+        factor += 0.1;
+    }
+    else if (event->angleDelta().y() < 0 && percentScale > 0 && factor > 0.2)
+    {
+        percentScale -= 5;
+        factor -= 0.1;
+    }
+    ui->l_percentScale->setText(QString::number(percentScale) + "%");
+    imageScaling(factor);
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        isDragging = true;
+        startPos = event->globalPosition().toPoint();
+        scrollStartPos = ui->scrollArea->widget()->mapToGlobal(ui->scrollArea->widget()->pos());
+        qDebug() << "startPos: " << startPos;
+    }
+}
+
+void MainWindow::mouseMoveEvent(QMouseEvent *event)
+{
+    if (isDragging)
+    {
+        QPoint currentPos = event->globalPosition().toPoint();
+        QPoint delta = currentPos - startPos;
+
+        ui->scrollArea->horizontalScrollBar()->setValue(ui->scrollArea->horizontalScrollBar()->value() - delta.x());
+        ui->scrollArea->verticalScrollBar()->setValue(ui->scrollArea->verticalScrollBar()->value() - delta.y());
+
+        startPos = currentPos;
+        QApplication::processEvents();
+    }
+}
+
+void MainWindow::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton && isDragging)
+    {
+        isDragging = false;
+        qDebug() << "Mouse released at position: " << event->globalPosition().toPoint();;
+    }
+}
+
 void MainWindow::imageSelection()
 {
     QString imagePath = QFileDialog::getOpenFileName(this, "Select file", "");
@@ -68,3 +120,37 @@ void MainWindow::imageScaling(double scaleFactor)
     ui->l_image->setPixmap(scaledPixmap);
     ui->l_image->setAlignment(Qt::AlignCenter);
 }
+
+void MainWindow::on_cb_scrolling_stateChanged(int arg1)
+{
+    if (arg1 == 0)
+    {
+        ui->scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        ui->scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+        ui->scrollArea->setWidgetResizable(false);
+        imageScaling(factor);
+    }
+    else
+    {
+        ui->scrollArea->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        ui->scrollArea->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        ui->scrollArea->setWidgetResizable(true);
+    }
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    QMainWindow::resizeEvent(event);
+
+    if (ui->scrollArea->verticalScrollBarPolicy() == Qt::ScrollBarAlwaysOff &&
+        ui->scrollArea->horizontalScrollBarPolicy() == Qt::ScrollBarAlwaysOff)
+    {
+        imageScaling(factor);
+    }
+}
+
+
+
+
+
+

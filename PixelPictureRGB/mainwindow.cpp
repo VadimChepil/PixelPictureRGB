@@ -1,17 +1,25 @@
-#include "graphicalInterface.h"
-#include "ui_graphicalInterface.h"
+#include "mainwindow.h"
+#include "ui_mainwindow.h"
+#include "paintscene.h"
+#include "customgraphicsview.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    scene = new QGraphicsScene(this);
+    scene = new paintscene(this);
     ui->graphicsView->setScene(scene);
+
+    ui->graphicsView->setCursorMode(true);
+    ui->graphicsView->setCursor(Qt::OpenHandCursor);
 
     connect(ui->b_selectImage, &QPushButton::clicked, this, &MainWindow::imageSelection);
     connect(ui->b_downSkaling, &QPushButton::clicked, this, &MainWindow::scaleImage);
     connect(ui->b_scalingUp, &QPushButton::clicked, this, &MainWindow::scaleImage);
+    connect(ui->b_saveImage, &QPushButton::clicked, this, &MainWindow::saveImage);
+    connect(ui->comboBox, &QComboBox::currentTextChanged, this, &MainWindow::onComboBoxTextChanged);
+
 }
 
 MainWindow::~MainWindow()
@@ -67,7 +75,6 @@ void MainWindow::scaleImage()
     imageScaling(factor);
 }
 
-
 void MainWindow::imageScaling(double scaleFactor)
 {
     if (!originalPix.isNull())
@@ -101,12 +108,55 @@ void MainWindow::wheelEvent(QWheelEvent *event)
         percentScale += 5;
         factor += 0.05;
     }
-    else if (event->angleDelta().y() < 0  && percentScale > 0 && factor > 0.2)
+    else if (event->angleDelta().y() < 0 && percentScale > 0 && factor > 0.2)
     {
         percentScale -= 5;
         factor -= 0.05;
     }
     ui->l_percentScale->setText(QString::number(percentScale) + "%");
     imageScaling(factor);
+}
+
+void MainWindow::saveImage()
+{
+    if (!scene) return;
+
+    QRectF sceneRect = scene->sceneRect();
+    QSizeF sceneSize = sceneRect.size().toSize();
+
+    QPixmap pixmap(sceneSize.toSize());
+    pixmap.fill(Qt::white);
+
+    QPainter painter(&pixmap);
+    scene->render(&painter, QRectF(), sceneRect);
+
+    QString fileName = QFileDialog::getSaveFileName(this, "Save Image", "", "Image Files (*.png *.jpg *.jpeg)");
+
+    if (!fileName.isEmpty())
+    {
+        pixmap.save(fileName);
+    }
+}
+
+void MainWindow::onComboBoxTextChanged(const QString &text)
+{
+    if (text == "Pen")
+    {
+        scene->setPenMode(true);
+        ui->graphicsView->setCursor(Qt::PointingHandCursor);
+    }
+    else
+    {
+        scene->setPenMode(false);
+    }
+    if (text == "Cursor")
+    {
+        ui->graphicsView->setCursorMode(true);
+        ui->graphicsView->setCursor(Qt::OpenHandCursor);
+    }
+    else
+    {
+        ui->graphicsView->setCursorMode(false);
+    }
 }
 

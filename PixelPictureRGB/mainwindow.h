@@ -1,8 +1,6 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include "customgraphicsview.h"
-
 #include <QMainWindow>
 #include <QFileDialog>
 #include <QPixmap>
@@ -11,7 +9,9 @@
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QGraphicsPixmapItem>
-#include <QGraphicsView>
+
+#include "customgraphicsview.h"
+#include "paintscene.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -29,7 +29,7 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QGraphicsScene *scene;
+    paintscene *scene;
     QPixmap originalPix;
     double factor;
 
@@ -37,10 +37,11 @@ private:
     void displayImage(const QString &path);
     void scaleImage();
     void imageScaling(double scaleFactor);
-
+    void saveImage();
 
 private slots:
     void on_cb_scrolling_stateChanged(int arg1);
+    void onComboBoxTextChanged(const QString &text);
 
 protected:
     void wheelEvent(QWheelEvent *event) override;

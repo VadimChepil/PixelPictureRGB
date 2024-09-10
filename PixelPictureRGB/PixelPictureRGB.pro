@@ -10,15 +10,17 @@ CONFIG += c++17
 
 SOURCES += \
     customgraphicsview.cpp \
-    graphicalInterface.cpp \
-    main.cpp
+    main.cpp \
+    mainwindow.cpp \
+    paintscene.cpp
 
 HEADERS += \
     customgraphicsview.h \
-    graphicalInterface.h
+    mainwindow.h \
+    paintscene.h
 
 FORMS += \
-    graphicalInterface.ui
+    mainwindow.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

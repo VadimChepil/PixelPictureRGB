@@ -51,8 +51,15 @@ void MainWindow::displayImage(const QString &path)
 
     originalPix = pix;
     factor = 1.0;
-    scene->clear();
-    scene->addPixmap(pix);
+    //scene->clear();
+    //scene->addPixmap(pix);
+    if (imageItem)
+    {
+        scene->removeItem(imageItem);  // Видаляємо попереднє зображення
+        delete imageItem;              // Очищаємо пам'ять
+    }
+
+    imageItem = scene->addPixmap(originalPix);  // Додаємо нове зображення
     imageScaling(factor);
 }
 
@@ -137,6 +144,7 @@ void MainWindow::saveImage()
         pixmap.save(fileName);
     }
 }
+
 
 void MainWindow::onComboBoxTextChanged(const QString &text)
 {

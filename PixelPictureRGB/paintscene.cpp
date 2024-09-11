@@ -1,7 +1,10 @@
 #include "paintscene.h"
 
 paintscene::paintscene(QObject *parent)
-    : QGraphicsScene(parent){}
+    : QGraphicsScene(parent), isDragging(false)
+{
+
+}
 
 paintscene::~paintscene() {}
 
@@ -12,28 +15,45 @@ void paintscene::setPenMode(bool enabled)
 
 void paintscene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (isPenModeActive)
+    if (isPenModeActive && event->button() == Qt::LeftButton)
     {
-        addEllipse(event->scenePos().x() - 5,
-                   event->scenePos().y() - 5,
-                   10,
-                   10,
-                   QPen(Qt::NoPen),
-                   QBrush(Qt::red));
-        previousPoint = event->scenePos();
+        if (this->sceneRect().contains(event->scenePos()))
+        {
+            isDragging = true;
+
+            QGraphicsEllipseItem *ellipse = new QGraphicsEllipseItem(event->scenePos().x() - 5,
+                                                                     event->scenePos().y() - 5,
+                                                                     10,
+                                                                     10);
+            ellipse->setBrush(QBrush(Qt::red));
+            this->addItem(ellipse);
+            previousPoint = event->scenePos();
+        }
     }
 }
 
 void paintscene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (isPenModeActive)
+    if (isPenModeActive && isDragging)
     {
-        addLine(previousPoint.x(),
-                previousPoint.y(),
-                event->scenePos().x(),
-                event->scenePos().y(),
-                QPen(Qt::red, 10, Qt::SolidLine, Qt::RoundCap));
+        if (this->sceneRect().contains(event->scenePos()))
+        {
+            QGraphicsLineItem *line = new QGraphicsLineItem(QLineF(previousPoint, event->scenePos()));
+            line->setPen(QPen(Qt::red, 10, Qt::SolidLine, Qt::RoundCap));
+            this->addItem(line);
 
-        previousPoint = event->scenePos();
+            previousPoint = event->scenePos();
+        }
     }
 }
+
+void paintscene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton && isDragging)
+    {
+        isDragging = false;
+    }
+}
+
+
+

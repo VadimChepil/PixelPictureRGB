@@ -32,6 +32,7 @@ private:
     paintscene *scene;
     QPixmap originalPix;
     double factor;
+    QGraphicsPixmapItem* imageItem = nullptr;
 
     void imageSelection();
     void displayImage(const QString &path);

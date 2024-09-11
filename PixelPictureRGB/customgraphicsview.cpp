@@ -8,8 +8,11 @@ CustomGraphicsView::CustomGraphicsView(QWidget *parent)
 
 void CustomGraphicsView::mousePressEvent(QMouseEvent *event)
 {
-    QGraphicsView::mousePressEvent(event);
-    if (!isCursorModeActive) return;
+    if (!isCursorModeActive)
+    {
+        QGraphicsView::mousePressEvent(event);
+        return;
+    }
 
     if (event->button() == Qt::LeftButton)
     {
@@ -21,8 +24,11 @@ void CustomGraphicsView::mousePressEvent(QMouseEvent *event)
 
 void CustomGraphicsView::mouseMoveEvent(QMouseEvent *event)
 {
-    QGraphicsView::mouseMoveEvent(event);
-    if (!isCursorModeActive || !isDragging) return;
+    if (!isCursorModeActive || !isDragging)
+    {
+        QGraphicsView::mouseMoveEvent(event);
+        return;
+    }
 
     if (isDragging)
     {
@@ -33,13 +39,16 @@ void CustomGraphicsView::mouseMoveEvent(QMouseEvent *event)
         verticalScrollBar()->setValue(verticalScrollBar()->value() - delta.y());
 
         startPos = currentPos;
-        QApplication::processEvents();
     }
 }
 
 void CustomGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 {
-    if (!isCursorModeActive) return;
+    if (!isCursorModeActive)
+    {
+        QGraphicsView::mouseReleaseEvent(event);
+        return;
+    }
 
     if (event->button() == Qt::LeftButton && isDragging)
     {

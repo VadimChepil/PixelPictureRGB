@@ -8,7 +8,8 @@
 #include <QGraphicsEllipseItem>
 #include <QGraphicsLineItem>
 #include <QMouseEvent>
-
+#include <QPainter>
+#include <QPixmap>
 
 class paintscene : public QGraphicsScene {
     Q_OBJECT
@@ -18,6 +19,10 @@ public:
     ~paintscene();
 
     void setPenMode(bool enabled);
+    void setEraserMode(bool enabled);
+
+signals:
+    void isPaintingNow(bool isPainting);
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -27,7 +32,12 @@ protected:
 private:
     QPointF previousPoint;
     bool isPenModeActive = false;
-    bool isDragging;
+    bool isEraserModeActive = false;
+    bool isPainting;
+    QList<QGraphicsItem *> drawnItems;
+
+
+    void eraseItemsAt(const QPointF &position, qreal radius);
 };
 
 #endif // PAINTSCENE_H

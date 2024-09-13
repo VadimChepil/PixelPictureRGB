@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->b_scalingUp, &QPushButton::clicked, this, &MainWindow::scaleImage);
     connect(ui->b_saveImage, &QPushButton::clicked, this, &MainWindow::saveImage);
     connect(ui->comboBox, &QComboBox::currentTextChanged, this, &MainWindow::onComboBoxTextChanged);
+    connect(ui->graphicsView, &CustomGraphicsView::scaleChanged, this, &MainWindow::updateScaleLabel);
+    connect(scene, &paintscene::isPaintingNow, ui->graphicsView, &CustomGraphicsView::onPaintingStateChanged);
 
 }
 
@@ -49,18 +51,16 @@ void MainWindow::displayImage(const QString &path)
         return;
     }
 
-    originalPix = pix;
     factor = 1.0;
-    //scene->clear();
-    //scene->addPixmap(pix);
-    if (imageItem)
-    {
-        scene->removeItem(imageItem);  // Видаляємо попереднє зображення
-        delete imageItem;              // Очищаємо пам'ять
-    }
-
-    imageItem = scene->addPixmap(originalPix);  // Додаємо нове зображення
+    scene->clear();
+    scene->addPixmap(pix);
+    scene->setSceneRect(0, 0, pix.width(), pix.height());
     imageScaling(factor);
+}
+
+void MainWindow::updateScaleLabel(int percent)
+{
+    ui->l_percentScale->setText(QString::number(percent) + "%");
 }
 
 void MainWindow::scaleImage()
@@ -82,16 +82,13 @@ void MainWindow::scaleImage()
     imageScaling(factor);
 }
 
+
 void MainWindow::imageScaling(double scaleFactor)
 {
-    if (!originalPix.isNull())
-    {
-        QPixmap scaledPixmap = originalPix.scaled(originalPix.size() * scaleFactor, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        scene->clear();
-        scene->addPixmap(scaledPixmap);
-        scene->setSceneRect(0, 0, scaledPixmap.width(), scaledPixmap.height());
-    }
+    ui->graphicsView->resetTransform();
+    ui->graphicsView->scale(scaleFactor, scaleFactor);
 }
+
 
 void MainWindow::on_cb_scrolling_stateChanged(int arg1)
 {
@@ -105,23 +102,6 @@ void MainWindow::on_cb_scrolling_stateChanged(int arg1)
         ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
         ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
     }
-}
-
-void MainWindow::wheelEvent(QWheelEvent *event)
-{
-    int percentScale = ui->l_percentScale->text().remove('%').toInt();
-    if (event->angleDelta().y() > 0 && percentScale < 200)
-    {
-        percentScale += 5;
-        factor += 0.05;
-    }
-    else if (event->angleDelta().y() < 0 && percentScale > 0 && factor > 0.2)
-    {
-        percentScale -= 5;
-        factor -= 0.05;
-    }
-    ui->l_percentScale->setText(QString::number(percentScale) + "%");
-    imageScaling(factor);
 }
 
 void MainWindow::saveImage()
@@ -145,26 +125,32 @@ void MainWindow::saveImage()
     }
 }
 
-
 void MainWindow::onComboBoxTextChanged(const QString &text)
 {
     if (text == "Pen")
     {
         scene->setPenMode(true);
+        scene->setEraserMode(false);
+        ui->graphicsView->setCursorMode(false);
         ui->graphicsView->setCursor(Qt::PointingHandCursor);
     }
-    else
+    else if (text == "Eraser")
     {
         scene->setPenMode(false);
+        scene->setEraserMode(true);
+        ui->graphicsView->setCursorMode(false);
+        ui->graphicsView->setCursor(Qt::CrossCursor);
     }
-    if (text == "Cursor")
+    else if (text == "Cursor")
     {
+        scene->setPenMode(false);
+        scene->setEraserMode(false);
         ui->graphicsView->setCursorMode(true);
         ui->graphicsView->setCursor(Qt::OpenHandCursor);
     }
-    else
-    {
-        ui->graphicsView->setCursorMode(false);
-    }
 }
+
+
+
+
 

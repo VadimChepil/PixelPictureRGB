@@ -18,12 +18,20 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
     void mouseReleaseEvent(QMouseEvent *event) override;
+    void wheelEvent(QWheelEvent *event);
+
+signals:
+    void scaleChanged(int percent);
+
+public slots:
+    void onPaintingStateChanged(bool isPainting);
 
 private:
     bool isDragging;
+    bool isPaintingActive;
     QPoint startPos;
     bool isCursorModeActive = false;
-
+    double scaleFactor;
 };
 
 #endif // CUSTOMGRAPHICSVIEW_H

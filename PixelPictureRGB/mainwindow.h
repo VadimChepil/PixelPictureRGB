@@ -32,10 +32,11 @@ private:
     paintscene *scene;
     QPixmap originalPix;
     double factor;
-    QGraphicsPixmapItem* imageItem = nullptr;
+
 
     void imageSelection();
     void displayImage(const QString &path);
+    void updateScaleLabel(int percent);
     void scaleImage();
     void imageScaling(double scaleFactor);
     void saveImage();
@@ -43,9 +44,7 @@ private:
 private slots:
     void on_cb_scrolling_stateChanged(int arg1);
     void onComboBoxTextChanged(const QString &text);
-
-protected:
-    void wheelEvent(QWheelEvent *event) override;
 };
 
 #endif // MAINWINDOW_H
+

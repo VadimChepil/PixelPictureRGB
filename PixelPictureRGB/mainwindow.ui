@@ -180,6 +180,11 @@
              <string>Pen</string>
             </property>
            </item>
+           <item>
+            <property name="text">
+             <string>Eraser</string>
+            </property>
+           </item>
           </widget>
          </widget>
         </item>

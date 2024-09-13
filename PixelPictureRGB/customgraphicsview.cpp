@@ -4,22 +4,22 @@
 #include <QApplication>
 
 CustomGraphicsView::CustomGraphicsView(QWidget *parent)
-    : QGraphicsView(parent), isDragging(false){}
+    : QGraphicsView(parent), isDragging(false), isPaintingActive(false), scaleFactor(1.0)
+{
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    setResizeAnchor(QGraphicsView::AnchorUnderMouse);
+}
 
 void CustomGraphicsView::mousePressEvent(QMouseEvent *event)
 {
-    if (!isCursorModeActive)
+    if (!isCursorModeActive || event->button() != Qt::LeftButton)
     {
         QGraphicsView::mousePressEvent(event);
         return;
     }
-
-    if (event->button() == Qt::LeftButton)
-    {
-        isDragging = true;
-        startPos = event->pos();
-        setCursor(Qt::ClosedHandCursor);
-    }
+    isDragging = true;
+    startPos = event->pos();
+    setCursor(Qt::ClosedHandCursor);
 }
 
 void CustomGraphicsView::mouseMoveEvent(QMouseEvent *event)
@@ -57,8 +57,32 @@ void CustomGraphicsView::mouseReleaseEvent(QMouseEvent *event)
     }
 }
 
+void CustomGraphicsView::wheelEvent(QWheelEvent *event)
+{
+    if (isPaintingActive) return;
+
+    if (event->angleDelta().y() > 0 && scaleFactor < 2.0)
+    {
+        scaleFactor += 0.05;
+    }
+    else if (event->angleDelta().y() < 0 && scaleFactor > 0.2)
+    {
+        scaleFactor -= 0.05;
+    }
+    resetTransform();
+    scale(scaleFactor, scaleFactor);
+
+    int percentScale = static_cast<int>(scaleFactor * 100);
+    emit scaleChanged(percentScale);
+}
+
 void CustomGraphicsView::setCursorMode(bool enabled)
 {
     isCursorModeActive = enabled;
+}
+
+void CustomGraphicsView::onPaintingStateChanged(bool isPainting)
+{
+    isPaintingActive = isPainting;
 }
 

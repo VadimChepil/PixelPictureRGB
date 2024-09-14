@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->comboBox, &QComboBox::currentTextChanged, this, &MainWindow::onComboBoxTextChanged);
     connect(ui->graphicsView, &CustomGraphicsView::scaleChanged, this, &MainWindow::updateScaleLabel);
     connect(scene, &paintscene::isPaintingNow, ui->graphicsView, &CustomGraphicsView::onPaintingStateChanged);
+    connect(this, &MainWindow::sendScaleFactor, ui->graphicsView, &CustomGraphicsView::getScaleFactor);
 
 }
 
@@ -51,29 +52,30 @@ void MainWindow::displayImage(const QString &path)
         return;
     }
 
-    factor = 1.0;
     scene->clear();
     scene->addPixmap(pix);
     scene->setSceneRect(0, 0, pix.width(), pix.height());
-    imageScaling(factor);
 }
 
-void MainWindow::updateScaleLabel(int percent)
+void MainWindow::updateScaleLabel(double percent, double scaleFactor)
 {
     ui->l_percentScale->setText(QString::number(percent) + "%");
+    imageScaling(scaleFactor);
 }
 
 void MainWindow::scaleImage()
 {
     QPushButton *button = qobject_cast<QPushButton *>(sender());
     int percentScale = ui->l_percentScale->text().remove('%').toInt();
+    double factor = double(percentScale) / 100;
+    emit sendScaleFactor(factor);
 
-    if (button->text() == "+" && percentScale < 200)
+    if (button->text() == "+" && factor <= 1.95)
     {
         percentScale += 5;
         factor += 0.05;
     }
-    else if (button->text() == "-" && percentScale > 0 && factor > 0.2)
+    else if (button->text() == "-" && factor > 0.2)
     {
         percentScale -= 5;
         factor -= 0.05;
@@ -151,6 +153,9 @@ void MainWindow::onComboBoxTextChanged(const QString &text)
 }
 
 
-
-
+void MainWindow::on_b_chouseAnotherImage_clicked()
+{
+    scene->clear();
+    ui->stackedWidget->setCurrentIndex(0);
+}
 

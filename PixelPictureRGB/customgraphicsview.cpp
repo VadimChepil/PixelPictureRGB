@@ -69,11 +69,9 @@ void CustomGraphicsView::wheelEvent(QWheelEvent *event)
     {
         scaleFactor -= 0.05;
     }
-    resetTransform();
-    scale(scaleFactor, scaleFactor);
 
-    int percentScale = static_cast<int>(scaleFactor * 100);
-    emit scaleChanged(percentScale);
+    double percentScale = scaleFactor * 100;
+    emit scaleChanged(percentScale, scaleFactor);
 }
 
 void CustomGraphicsView::setCursorMode(bool enabled)
@@ -86,3 +84,7 @@ void CustomGraphicsView::onPaintingStateChanged(bool isPainting)
     isPaintingActive = isPainting;
 }
 
+void CustomGraphicsView::getScaleFactor(double scaleFactor)
+{
+    this->scaleFactor = scaleFactor;
+}

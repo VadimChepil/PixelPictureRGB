@@ -21,10 +21,11 @@ protected:
     void wheelEvent(QWheelEvent *event);
 
 signals:
-    void scaleChanged(int percent);
+    void scaleChanged(double percent, double scaleFactor);
 
 public slots:
     void onPaintingStateChanged(bool isPainting);
+    void getScaleFactor(double scaleFactor);
 
 private:
     bool isDragging;

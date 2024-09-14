@@ -27,16 +27,17 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void sendScaleFactor(double scaleFactor);
+
 private:
     Ui::MainWindow *ui;
     paintscene *scene;
     QPixmap originalPix;
-    double factor;
 
 
     void imageSelection();
     void displayImage(const QString &path);
-    void updateScaleLabel(int percent);
     void scaleImage();
     void imageScaling(double scaleFactor);
     void saveImage();
@@ -44,6 +45,8 @@ private:
 private slots:
     void on_cb_scrolling_stateChanged(int arg1);
     void onComboBoxTextChanged(const QString &text);
+    void updateScaleLabel(double percent, double scaleFactor);
+    void on_b_chouseAnotherImage_clicked();
 };
 
 #endif // MAINWINDOW_H

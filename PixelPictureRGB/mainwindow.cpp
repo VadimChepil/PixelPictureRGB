@@ -3,6 +3,8 @@
 #include "paintscene.h"
 #include "customgraphicsview.h"
 
+#include <QRegularExpression>
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
 {
@@ -11,17 +13,47 @@ MainWindow::MainWindow(QWidget *parent)
     scene = new paintscene(this);
     ui->graphicsView->setScene(scene);
 
+    QButtonGroup *toolButtonGroup = new QButtonGroup(this);
+    toolButtonGroup->addButton(ui->b_cursor);
+    toolButtonGroup->addButton(ui->b_pen);
+    toolButtonGroup->addButton(ui->b_eraser);
+    toolButtonGroup->addButton(ui->b_pipette);
+    toolButtonGroup->addButton(ui->b_filling);
+
+    toolButtonGroup->setExclusive(true);  // Забезпечує, що лише одна кнопка активна
+
     ui->graphicsView->setCursorMode(true);
     ui->graphicsView->setCursor(Qt::OpenHandCursor);
+    ui->b_cursor->setChecked(true);
 
     connect(ui->b_selectImage, &QPushButton::clicked, this, &MainWindow::imageSelection);
     connect(ui->b_downSkaling, &QPushButton::clicked, this, &MainWindow::scaleImage);
     connect(ui->b_scalingUp, &QPushButton::clicked, this, &MainWindow::scaleImage);
     connect(ui->b_saveImage, &QPushButton::clicked, this, &MainWindow::saveImage);
-    connect(ui->comboBox, &QComboBox::currentTextChanged, this, &MainWindow::onComboBoxTextChanged);
     connect(ui->graphicsView, &CustomGraphicsView::scaleChanged, this, &MainWindow::updateScaleLabel);
     connect(scene, &paintscene::isPaintingNow, ui->graphicsView, &CustomGraphicsView::onPaintingStateChanged);
     connect(this, &MainWindow::sendScaleFactor, ui->graphicsView, &CustomGraphicsView::getScaleFactor);
+
+    connect(ui->b_black, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_darkGray, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_gray, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_white, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_darkRed, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_red, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_orange, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_yellow, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_darkGreen, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_green, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_lime, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_lightGreen, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_darkBlue, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_blue, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_cyan, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_lightBlue, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_brown, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_purple, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_magenta, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
+    connect(ui->b_pink, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
 
 }
 
@@ -114,7 +146,7 @@ void MainWindow::saveImage()
     QSizeF sceneSize = sceneRect.size().toSize();
 
     QPixmap pixmap(sceneSize.toSize());
-    pixmap.fill(Qt::white);
+    pixmap.fill(Qt::transparent);
 
     QPainter painter(&pixmap);
     scene->render(&painter, QRectF(), sceneRect);
@@ -127,35 +159,102 @@ void MainWindow::saveImage()
     }
 }
 
-void MainWindow::onComboBoxTextChanged(const QString &text)
+void MainWindow::changeSetCheking(QPushButton *clickedButton)
 {
-    if (text == "Pen")
-    {
-        scene->setPenMode(true);
-        scene->setEraserMode(false);
-        ui->graphicsView->setCursorMode(false);
-        ui->graphicsView->setCursor(Qt::PointingHandCursor);
-    }
-    else if (text == "Eraser")
-    {
-        scene->setPenMode(false);
-        scene->setEraserMode(true);
-        ui->graphicsView->setCursorMode(false);
-        ui->graphicsView->setCursor(Qt::CrossCursor);
-    }
-    else if (text == "Cursor")
-    {
-        scene->setPenMode(false);
-        scene->setEraserMode(false);
-        ui->graphicsView->setCursorMode(true);
-        ui->graphicsView->setCursor(Qt::OpenHandCursor);
-    }
+    if (ui->b_cursor != clickedButton)
+        ui->b_cursor->setChecked(false);
+    if (ui->b_pen != clickedButton)
+        ui->b_pen->setChecked(false);
+    if (ui->b_eraser != clickedButton)
+        ui->b_eraser->setChecked(false);
+    if (ui->b_pipette != clickedButton)
+        ui->b_pipette->setChecked(false);
+    if (ui->b_filling != clickedButton)
+        ui->b_filling->setChecked(false);
 }
-
 
 void MainWindow::on_b_chouseAnotherImage_clicked()
 {
     scene->clear();
     ui->stackedWidget->setCurrentIndex(0);
 }
+
+
+void MainWindow::on_hs_changePx_sliderMoved(int position)
+{
+    ui->le_countPx->setText(QString::number(position));
+}
+
+void MainWindow::on_b_pen_toggled(bool checked)
+{
+    if (checked)
+    {
+        changeSetCheking(ui->b_pen);
+        scene->setPenMode(true);
+        ui->graphicsView->setCursor(Qt::PointingHandCursor);
+    }
+    else
+    {
+        scene->setPenMode(false);
+    }
+}
+
+void MainWindow::on_b_cursor_toggled(bool checked)
+{
+    if (checked)
+    {
+        changeSetCheking(ui->b_cursor);
+        ui->graphicsView->setCursorMode(true);
+        ui->graphicsView->setCursor(Qt::OpenHandCursor);
+    }
+    else
+    {
+        ui->graphicsView->setCursorMode(false);
+    }
+}
+
+void MainWindow::on_b_eraser_toggled(bool checked)
+{
+    if (checked)
+    {
+        changeSetCheking(ui->b_eraser);
+        scene->setEraserMode(true);
+        ui->graphicsView->setCursor(Qt::CrossCursor);
+    }
+    else
+    {
+        scene->setEraserMode(false);
+    }
+}
+
+void MainWindow::on_b_colorButton_clicked()
+{
+    QPushButton* button = qobject_cast<QPushButton*>(sender());
+    if (button)
+    {
+        QString buttonStyle = button->styleSheet();
+        QColor colorName;
+        qDebug() << buttonStyle;
+        ui->l_showColorNow->setStyleSheet(buttonStyle);
+        if (buttonStyle.contains("rgb(139, 0, 0)"))
+        {
+            colorName = QColor(139, 0, 0);
+        }
+        else if (buttonStyle.contains("rgb(98, 98, 98)"))
+        {
+            colorName = QColor(98, 98, 98);
+        }
+        else
+        {
+            colorName = buttonStyle.remove("background-color:").trimmed();
+        }
+        QColor color = colorName;
+        scene->setPenColor(color);
+    }
+}
+
+
+
+
+
 

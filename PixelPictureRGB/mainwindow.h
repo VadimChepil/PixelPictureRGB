@@ -9,6 +9,7 @@
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QGraphicsPixmapItem>
+#include <QButtonGroup>
 
 #include "customgraphicsview.h"
 #include "paintscene.h"
@@ -41,12 +42,17 @@ private:
     void scaleImage();
     void imageScaling(double scaleFactor);
     void saveImage();
+    void changeSetCheking(QPushButton *clickedButton);
 
 private slots:
     void on_cb_scrolling_stateChanged(int arg1);
-    void onComboBoxTextChanged(const QString &text);
     void updateScaleLabel(double percent, double scaleFactor);
     void on_b_chouseAnotherImage_clicked();
+    void on_hs_changePx_sliderMoved(int position);
+    void on_b_pen_toggled(bool checked);
+    void on_b_cursor_toggled(bool checked);
+    void on_b_eraser_toggled(bool checked);
+    void on_b_colorButton_clicked();
 };
 
 #endif // MAINWINDOW_H

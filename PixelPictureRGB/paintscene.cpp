@@ -15,6 +15,11 @@ void paintscene::setEraserMode(bool enabled)
     isEraserModeActive = enabled;
 }
 
+void paintscene::setPenColor(const QColor &color)
+{
+    penColor = color;
+}
+
 void paintscene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (isEraserModeActive && event->button() == Qt::LeftButton)
@@ -33,7 +38,8 @@ void paintscene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                                                                      event->scenePos().y() - 5,
                                                                      10,
                                                                      10);
-            ellipse->setBrush(QBrush(Qt::red));
+            ellipse->setBrush(QBrush(QColor(penColor)));
+            ellipse->setPen(Qt::NoPen);
             this->addItem(ellipse);
             drawnItems.append(ellipse);
             previousPoint = event->scenePos();
@@ -48,8 +54,9 @@ void paintscene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     {
         if (this->sceneRect().contains(event->scenePos()))
         {
+            QPen pen(QColor(penColor), 10, Qt::SolidLine, Qt::RoundCap);
             QGraphicsLineItem *line = new QGraphicsLineItem(QLineF(previousPoint, event->scenePos()));
-            line->setPen(QPen(Qt::red, 10, Qt::SolidLine, Qt::RoundCap));
+            line->setPen(QPen(pen));
             this->addItem(line);
             drawnItems.append(line);
             previousPoint = event->scenePos();

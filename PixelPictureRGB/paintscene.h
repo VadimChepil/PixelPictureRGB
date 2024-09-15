@@ -20,6 +20,7 @@ public:
 
     void setPenMode(bool enabled);
     void setEraserMode(bool enabled);
+    void setPenColor(const QColor& color);
 
 signals:
     void isPaintingNow(bool isPainting);
@@ -35,6 +36,7 @@ private:
     bool isEraserModeActive = false;
     bool isPainting;
     QList<QGraphicsItem *> drawnItems;
+    QColor penColor;
 
 
     void eraseItemsAt(const QPointF &position, qreal radius);

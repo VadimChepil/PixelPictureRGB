@@ -4,14 +4,14 @@
 #include <QApplication>
 
 CustomGraphicsView::CustomGraphicsView(QWidget *parent)
-    : QGraphicsView(parent), isDragging(false), isPaintingActive(false), scaleFactor(1.0)
+    : QGraphicsView(parent), isDragging(false), isPaintingModeActive(false), isCursorModeActive(false), scaleFactor(1.0)
 {
     setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
     setResizeAnchor(QGraphicsView::AnchorUnderMouse);
 }
 
 void CustomGraphicsView::mousePressEvent(QMouseEvent *event)
-{
+{ 
     if (!isCursorModeActive || event->button() != Qt::LeftButton)
     {
         QGraphicsView::mousePressEvent(event);
@@ -59,7 +59,7 @@ void CustomGraphicsView::mouseReleaseEvent(QMouseEvent *event)
 
 void CustomGraphicsView::wheelEvent(QWheelEvent *event)
 {
-    if (isPaintingActive) return;
+    if (isPaintingModeActive) return;
 
     if (event->angleDelta().y() > 0 && scaleFactor < 2.0)
     {
@@ -81,7 +81,7 @@ void CustomGraphicsView::setCursorMode(bool enabled)
 
 void CustomGraphicsView::onPaintingStateChanged(bool isPainting)
 {
-    isPaintingActive = isPainting;
+    isPaintingModeActive = isPainting;
 }
 
 void CustomGraphicsView::getScaleFactor(double scaleFactor)

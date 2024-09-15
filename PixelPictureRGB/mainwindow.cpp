@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     toolButtonGroup->addButton(ui->b_pipette);
     toolButtonGroup->addButton(ui->b_filling);
 
-    toolButtonGroup->setExclusive(true);  // Забезпечує, що лише одна кнопка активна
+    toolButtonGroup->setExclusive(true);
 
     ui->graphicsView->setCursorMode(true);
     ui->graphicsView->setCursor(Qt::OpenHandCursor);
@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->graphicsView, &CustomGraphicsView::scaleChanged, this, &MainWindow::updateScaleLabel);
     connect(scene, &paintscene::isPaintingNow, ui->graphicsView, &CustomGraphicsView::onPaintingStateChanged);
     connect(this, &MainWindow::sendScaleFactor, ui->graphicsView, &CustomGraphicsView::getScaleFactor);
+    connect(scene, &paintscene::colorPicked, this, &MainWindow::setPipetteColor);
 
     connect(ui->b_black, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
     connect(ui->b_darkGray, &QPushButton::clicked, this, &MainWindow::on_b_colorButton_clicked);
@@ -183,6 +184,7 @@ void MainWindow::on_b_chouseAnotherImage_clicked()
 void MainWindow::on_hs_changePx_sliderMoved(int position)
 {
     ui->le_countPx->setText(QString::number(position));
+    scene->setSizePx(position);
 }
 
 void MainWindow::on_b_pen_toggled(bool checked)
@@ -191,6 +193,9 @@ void MainWindow::on_b_pen_toggled(bool checked)
     {
         changeSetCheking(ui->b_pen);
         scene->setPenMode(true);
+        QString colorName = ui->l_showColorNow->styleSheet();
+        QColor color = colorName.remove("background-color:").trimmed();
+        scene->setPenColor(color);
         ui->graphicsView->setCursor(Qt::PointingHandCursor);
     }
     else
@@ -234,7 +239,6 @@ void MainWindow::on_b_colorButton_clicked()
     {
         QString buttonStyle = button->styleSheet();
         QColor colorName;
-        qDebug() << buttonStyle;
         ui->l_showColorNow->setStyleSheet(buttonStyle);
         if (buttonStyle.contains("rgb(139, 0, 0)"))
         {
@@ -253,8 +257,23 @@ void MainWindow::on_b_colorButton_clicked()
     }
 }
 
+void MainWindow::on_b_pipette_toggled(bool checked)
+{
+    if (checked)
+    {
+        changeSetCheking(ui->b_pipette);
+        scene->setPipetteMode(true);
+        ui->graphicsView->setCursor(Qt::UpArrowCursor);
+    }
+    else
+    {
+        scene->setPipetteMode(false);
+    }
+}
 
-
-
-
+void MainWindow::setPipetteColor(const QColor &color)
+{
+    QString colorName = color.name();
+    ui->l_showColorNow->setStyleSheet(QString("background-color: %1").arg(colorName));
+}
 

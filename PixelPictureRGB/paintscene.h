@@ -10,6 +10,7 @@
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPixmap>
+#include <QPainterPath>
 
 class paintscene : public QGraphicsScene {
     Q_OBJECT
@@ -21,9 +22,13 @@ public:
     void setPenMode(bool enabled);
     void setEraserMode(bool enabled);
     void setPenColor(const QColor& color);
+    void setSizePx(const int& size);
+    void setPipetteMode(bool enabled);
 
 signals:
     void isPaintingNow(bool isPainting);
+    void colorPicked(const QColor &color);
+
 
 protected:
     void mousePressEvent(QGraphicsSceneMouseEvent *event) override;
@@ -34,9 +39,11 @@ private:
     QPointF previousPoint;
     bool isPenModeActive = false;
     bool isEraserModeActive = false;
+    bool isPipetteModeActive = false;
     bool isPainting;
     QList<QGraphicsItem *> drawnItems;
     QColor penColor;
+    int sizePx;
 
 
     void eraseItemsAt(const QPointF &position, qreal radius);

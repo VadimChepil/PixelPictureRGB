@@ -29,9 +29,9 @@ public slots:
 
 private:
     bool isDragging;
-    bool isPaintingActive;
     QPoint startPos;
-    bool isCursorModeActive = false;
+    bool isPaintingModeActive;
+    bool isCursorModeActive;
     double scaleFactor;
 };
 

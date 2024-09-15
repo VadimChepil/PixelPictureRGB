@@ -53,6 +53,8 @@ private slots:
     void on_b_cursor_toggled(bool checked);
     void on_b_eraser_toggled(bool checked);
     void on_b_colorButton_clicked();
+    void on_b_pipette_toggled(bool checked);
+    void setPipetteColor(const QColor &color);
 };
 
 #endif // MAINWINDOW_H

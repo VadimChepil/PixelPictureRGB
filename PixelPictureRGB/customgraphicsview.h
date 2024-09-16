@@ -4,6 +4,7 @@
 #include <QGraphicsView>
 #include <QMouseEvent>
 #include <QWheelEvent>
+#include <QScrollBar>
 
 class CustomGraphicsView : public QGraphicsView
 {

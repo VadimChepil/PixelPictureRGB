@@ -1,7 +1,4 @@
 #include "customgraphicsview.h"
-#include <QDebug>
-#include <QScrollBar>
-#include <QApplication>
 
 CustomGraphicsView::CustomGraphicsView(QWidget *parent)
     : QGraphicsView(parent), isDragging(false), isPaintingModeActive(false), isCursorModeActive(false), scaleFactor(1.0)

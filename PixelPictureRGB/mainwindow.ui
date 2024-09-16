@@ -39,22 +39,82 @@
        <number>0</number>
       </property>
       <widget class="QWidget" name="page">
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QLabel" name="l_information">
-          <property name="text">
-           <string>Photo editor</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QPushButton" name="b_selectImage">
-          <property name="text">
-           <string>Select an image</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
+       <widget class="QLabel" name="l_information">
+        <property name="geometry">
+         <rect>
+          <x>320</x>
+          <y>90</y>
+          <width>271</width>
+          <height>61</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <family>Times New Roman</family>
+          <pointsize>22</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>PixelPictureRGB</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="b_selectImage">
+        <property name="geometry">
+         <rect>
+          <x>330</x>
+          <y>330</y>
+          <width>191</width>
+          <height>51</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Select an image</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>170</y>
+          <width>651</width>
+          <height>71</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Times New Roman</family>
+          <pointsize>18</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>This editor focuses on easy and convenient photo</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>240</y>
+          <width>621</width>
+          <height>31</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <family>Times New Roman</family>
+          <pointsize>18</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>editing with drawing  and color adjustment tools.</string>
+        </property>
+       </widget>
       </widget>
       <widget class="QWidget" name="page_2">
        <property name="minimumSize">
@@ -224,8 +284,8 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset>
-                   <normaloff>C:/Users/vadim/OneDrive/Рабочий стол/курсор3.png</normaloff>C:/Users/vadim/OneDrive/Рабочий стол/курсор3.png</iconset>
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/icon/icons/cursor.png</normaloff>:/icon/icons/cursor.png</iconset>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -250,8 +310,8 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset>
-                   <normaloff>C:/Users/vadim/OneDrive/Рабочий стол/ручка.png</normaloff>C:/Users/vadim/OneDrive/Рабочий стол/ручка.png</iconset>
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/icon/icons/pen.png</normaloff>:/icon/icons/pen.png</iconset>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -260,6 +320,9 @@
                </item>
                <item>
                 <widget class="QPushButton" name="b_pipette">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                    <horstretch>0</horstretch>
@@ -276,8 +339,8 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset>
-                   <normaloff>C:/Users/vadim/OneDrive/Рабочий стол/піпетка.png</normaloff>C:/Users/vadim/OneDrive/Рабочий стол/піпетка.png</iconset>
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/icon/icons/pipette.png</normaloff>:/icon/icons/pipette.png</iconset>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -312,8 +375,8 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset>
-                   <normaloff>C:/Users/vadim/OneDrive/Рабочий стол/залівка.png</normaloff>C:/Users/vadim/OneDrive/Рабочий стол/залівка.png</iconset>
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/icon/icons/filling.png</normaloff>:/icon/icons/filling.png</iconset>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -338,8 +401,8 @@
                   <string/>
                  </property>
                  <property name="icon">
-                  <iconset>
-                   <normaloff>C:/Users/vadim/OneDrive/Рабочий стол/ластик.png</normaloff>C:/Users/vadim/OneDrive/Рабочий стол/ластик.png</iconset>
+                  <iconset resource="resources.qrc">
+                   <normaloff>:/icon/icons/eraser.png</normaloff>:/icon/icons/eraser.png</iconset>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -952,6 +1015,8 @@
    <header>customgraphicsview.h</header>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="resources.qrc"/>
+ </resources>
  <connections/>
 </ui>

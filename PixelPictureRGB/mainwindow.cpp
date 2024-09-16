@@ -3,7 +3,6 @@
 #include "paintscene.h"
 #include "customgraphicsview.h"
 
-#include <QRegularExpression>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow)
@@ -178,8 +177,21 @@ void MainWindow::changeSetCheking(QPushButton *clickedButton)
 
 void MainWindow::on_b_chouseAnotherImage_clicked()
 {
-    scene->clear();
-    ui->stackedWidget->setCurrentIndex(0);
+    QMessageBox msgBox(this);
+    msgBox.setWindowTitle("Question");
+    msgBox.setText("Are you sure you want to select another image, this image with all changes will be deleted");
+    QPushButton *buttonYes = msgBox.addButton(QMessageBox::Yes);
+    QPushButton *buttonNo = msgBox.addButton(QMessageBox::No);
+    msgBox.exec();
+    if (msgBox.clickedButton() == buttonYes)
+    {
+        scene->clear();
+        ui->stackedWidget->setCurrentIndex(0);
+    }
+    else if (msgBox.clickedButton() == buttonNo)
+    {
+        return;
+    }
 }
 
 void MainWindow::on_hs_changePx_valueChanged(int value)
@@ -274,8 +286,8 @@ void MainWindow::on_b_pipette_toggled(bool checked)
 
 void MainWindow::setPipetteColor(const QColor &color)
 {
-    QString colorName = color.name();
-    ui->l_showColorNow->setStyleSheet(QString("background-color: %1").arg(colorName));
+    QString colorName = "background-color: " + color.name();
+    ui->l_showColorNow->setStyleSheet(colorName);
 }
 
 

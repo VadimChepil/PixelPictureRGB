@@ -64,13 +64,7 @@ void paintscene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     }
     else if (isPipetteModeActive || isFillingModeActive)
     {
-        QGraphicsPixmapItem *pixmapItem = nullptr;
-        foreach (QGraphicsItem *item, items(event->scenePos()))
-        {
-            pixmapItem = dynamic_cast<QGraphicsPixmapItem*>(item);
-            if (pixmapItem)
-                break;
-        }
+        QGraphicsPixmapItem *pixmapItem = getPixmapItemAt(event->scenePos());
 
         if (pixmapItem)
         {
@@ -112,6 +106,10 @@ void paintscene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             previousPoint = event->scenePos();
         }
     }
+    else if (isEraserModeActive && (event->buttons() & Qt::LeftButton))
+    {
+        eraseItemsAt(event->scenePos(), sizePx);
+    }
 }
 
 void paintscene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
@@ -141,13 +139,7 @@ void paintscene::eraseItemsAt(const QPointF &position, qreal radius)
 
 void paintscene::floodFill(const QPointF &pos)
 {
-    QGraphicsPixmapItem *pixmapItem = nullptr;
-    foreach (QGraphicsItem *item, items(pos))
-    {
-        pixmapItem = dynamic_cast<QGraphicsPixmapItem*>(item);
-        if (pixmapItem)
-            break;
-    }
+    QGraphicsPixmapItem *pixmapItem = getPixmapItemAt(pos);
 
     if (!pixmapItem) return;
 
@@ -164,8 +156,13 @@ void paintscene::floodFill(const QPointF &pos)
     QStack<QPoint> stack;
     stack.push(imagePos);
 
+    QSet<QPoint> processedPoints;
+
     while (!stack.isEmpty()) {
         QPoint point = stack.pop();
+        if (processedPoints.contains(point)) continue;
+        processedPoints.insert(point);
+
         int x = point.x();
         int y = point.y();
 
@@ -182,9 +179,22 @@ void paintscene::floodFill(const QPointF &pos)
         stack.push(QPoint(x, y + 1));
         stack.push(QPoint(x, y - 1));
     }
+
     pixmapItem->setPixmap(QPixmap::fromImage(image));
     this->update();
 }
+
+QGraphicsPixmapItem *paintscene::getPixmapItemAt(const QPointF &pos)
+{
+    QGraphicsPixmapItem *pixmapItem = nullptr;
+    for (QGraphicsItem *item : items(pos))
+    {
+        pixmapItem = dynamic_cast<QGraphicsPixmapItem*>(item);
+        if (pixmapItem) break;
+    }
+    return pixmapItem;
+}
+
 
 
 

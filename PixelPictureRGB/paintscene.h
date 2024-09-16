@@ -2,16 +2,13 @@
 #define PAINTSCENE_H
 
 #include <QGraphicsScene>
-#include <QPointF>
 #include <QGraphicsSceneMouseEvent>
-#include <QDebug>
-#include <QGraphicsEllipseItem>
-#include <QGraphicsLineItem>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QPixmap>
-#include <QPainterPath>
+#include <QColor>
+#include <QList>
+#include <QPointF>
 #include <QStack>
+#include <QGraphicsPixmapItem>
+#include <QSet>
 
 class paintscene : public QGraphicsScene {
     Q_OBJECT
@@ -51,6 +48,7 @@ private:
 
     void eraseItemsAt(const QPointF &position, qreal radius);
     void floodFill(const QPointF &pos);
+    QGraphicsPixmapItem* getPixmapItemAt(const QPointF &pos);
 };
 
 #endif // PAINTSCENE_H

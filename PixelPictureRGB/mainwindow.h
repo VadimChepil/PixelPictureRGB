@@ -6,8 +6,6 @@
 #include <QPixmap>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QMouseEvent>
-#include <QScrollBar>
 #include <QGraphicsPixmapItem>
 #include <QButtonGroup>
 #include <QColorDialog>

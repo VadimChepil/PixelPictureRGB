@@ -67,9 +67,11 @@ void MainWindow::imageSelection()
 {
     QString imagePath = QFileDialog::getOpenFileName(this, "Select file", "");
 
-    if (imagePath.isEmpty() || !(imagePath.endsWith(".jpeg", Qt::CaseInsensitive) || imagePath.endsWith(".png", Qt::CaseInsensitive)))
+    if (imagePath.isEmpty() || !(imagePath.endsWith(".jpeg", Qt::CaseInsensitive) ||
+                                 imagePath.endsWith(".png", Qt::CaseInsensitive) ||
+                                 imagePath.endsWith(".jpg", Qt::CaseInsensitive)))
     {
-        QMessageBox::warning(this, "Invalid data", "The editor supports only JPEG and PNG image formats");
+        QMessageBox::warning(this, "Invalid data", "The editor supports only JPEG, JPG, PNG image formats");
         return;
     }
     ui->stackedWidget->setCurrentIndex(1);
@@ -180,11 +182,10 @@ void MainWindow::on_b_chouseAnotherImage_clicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
-
-void MainWindow::on_hs_changePx_sliderMoved(int position)
+void MainWindow::on_hs_changePx_valueChanged(int value)
 {
-    ui->le_countPx->setText(QString::number(position));
-    scene->setSizePx(position);
+    ui->le_countPx->setText(QString::number(value));
+    scene->setSizePx(value);
 }
 
 void MainWindow::on_b_pen_toggled(bool checked)
@@ -195,7 +196,7 @@ void MainWindow::on_b_pen_toggled(bool checked)
         scene->setPenMode(true);
         QString colorName = ui->l_showColorNow->styleSheet();
         QColor color = colorName.remove("background-color:").trimmed();
-        scene->setPenColor(color);
+        scene->setColor(color);
         ui->graphicsView->setCursor(Qt::PointingHandCursor);
     }
     else
@@ -253,7 +254,7 @@ void MainWindow::on_b_colorButton_clicked()
             colorName = buttonStyle.remove("background-color:").trimmed();
         }
         QColor color = colorName;
-        scene->setPenColor(color);
+        scene->setColor(color);
     }
 }
 
@@ -275,5 +276,28 @@ void MainWindow::setPipetteColor(const QColor &color)
 {
     QString colorName = color.name();
     ui->l_showColorNow->setStyleSheet(QString("background-color: %1").arg(colorName));
+}
+
+
+void MainWindow::on_b_filling_toggled(bool checked)
+{
+    if (checked)
+    {
+        changeSetCheking(ui->b_filling);
+        scene->setFillingMode(true);
+        ui->graphicsView->setCursor(Qt::SizeAllCursor);
+    }
+    else
+    {
+        scene->setFillingMode(false);
+    }
+}
+
+void MainWindow::on_b_RGB_clicked()
+{
+    QColor color = QColorDialog::getColor(Qt::white, this, tr("Selection color"));
+    scene->setColor(color);
+    QString colorName = "background-color: " + color.name();
+    ui->l_showColorNow->setStyleSheet(colorName);
 }
 

@@ -10,6 +10,8 @@
 #include <QScrollBar>
 #include <QGraphicsPixmapItem>
 #include <QButtonGroup>
+#include <QColorDialog>
+#include <QColor>
 
 #include "customgraphicsview.h"
 #include "paintscene.h"
@@ -34,7 +36,6 @@ signals:
 private:
     Ui::MainWindow *ui;
     paintscene *scene;
-    QPixmap originalPix;
 
 
     void imageSelection();
@@ -48,13 +49,15 @@ private slots:
     void on_cb_scrolling_stateChanged(int arg1);
     void updateScaleLabel(double percent, double scaleFactor);
     void on_b_chouseAnotherImage_clicked();
-    void on_hs_changePx_sliderMoved(int position);
+    void on_hs_changePx_valueChanged(int value);
     void on_b_pen_toggled(bool checked);
     void on_b_cursor_toggled(bool checked);
     void on_b_eraser_toggled(bool checked);
     void on_b_colorButton_clicked();
     void on_b_pipette_toggled(bool checked);
     void setPipetteColor(const QColor &color);
+    void on_b_filling_toggled(bool checked);
+    void on_b_RGB_clicked();
 };
 
 #endif // MAINWINDOW_H

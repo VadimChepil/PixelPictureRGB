@@ -1,7 +1,8 @@
 #include "paintscene.h"
 
 paintscene::paintscene(QObject *parent)
-    : QGraphicsScene(parent), isPainting(false){}
+    : QGraphicsScene(parent), isPenModeActive(false), isEraserModeActive(false),
+    isPipetteModeActive(false), isFillingModeActive(false), isPainting(false) {}
 
 paintscene::~paintscene() {}
 
@@ -15,9 +16,9 @@ void paintscene::setEraserMode(bool enabled)
     isEraserModeActive = enabled;
 }
 
-void paintscene::setPenColor(const QColor &color)
+void paintscene::setColor(const QColor &color)
 {
-    penColor = color;
+    this->color = color;
 }
 
 void paintscene::setSizePx(const int &size)
@@ -29,15 +30,18 @@ void paintscene::setPipetteMode(bool enabled)
     isPipetteModeActive = enabled;
 }
 
-/*void paintscene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+void paintscene::setFillingMode(bool enabled)
 {
-    if (isEraserModeActive && event->button() == Qt::LeftButton)
+    isFillingModeActive = enabled;
+}
+
+void paintscene::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    if (event->button() != Qt::LeftButton)
     {
-        eraseItemsAt(event->scenePos(), sizePx);
         return;
     }
-
-    if (isPenModeActive && event->button() == Qt::LeftButton)
+    if (isPenModeActive)
     {
         if (this->sceneRect().contains(event->scenePos()))
         {
@@ -47,27 +51,18 @@ void paintscene::setPipetteMode(bool enabled)
                                                                      event->scenePos().y() - (sizePx / 2),
                                                                      sizePx,
                                                                      sizePx);
-            ellipse->setBrush(QBrush(QColor(penColor)));
+            ellipse->setBrush(QBrush(QColor(color)));
             ellipse->setPen(Qt::NoPen);
             this->addItem(ellipse);
             drawnItems.append(ellipse);
             previousPoint = event->scenePos();
         }
     }
-}*/
-void paintscene::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    if (isPenModeActive)
-    {
-        isPainting = true;
-        previousPoint = event->scenePos();
-        emit isPaintingNow(isPainting);
-    }
     else if (isEraserModeActive)
     {
         eraseItemsAt(event->scenePos(), sizePx);
     }
-    else if (isPipetteModeActive)
+    else if (isPipetteModeActive || isFillingModeActive)
     {
         QGraphicsPixmapItem *pixmapItem = nullptr;
         foreach (QGraphicsItem *item, items(event->scenePos()))
@@ -88,12 +83,18 @@ void paintscene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
             if (x >= 0 && y >= 0 && x < image.width() && y < image.height())
             {
-                QColor color = image.pixelColor(x, y);
-                emit colorPicked(color);
+                if (isPipetteModeActive)
+                {
+                    QColor color = image.pixelColor(x, y);
+                    emit colorPicked(color);
+                }
+                else
+                {
+                    floodFill(event->scenePos());
+                }
             }
         }
     }
-    QGraphicsScene::mousePressEvent(event);
 }
 
 
@@ -103,7 +104,7 @@ void paintscene::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
     {
         if (this->sceneRect().contains(event->scenePos()))
         {
-            QPen pen(QColor(penColor), sizePx, Qt::SolidLine, Qt::RoundCap);
+            QPen pen(QColor(color), sizePx, Qt::SolidLine, Qt::RoundCap);
             QGraphicsLineItem *line = new QGraphicsLineItem(QLineF(previousPoint, event->scenePos()));
             line->setPen(QPen(pen));
             this->addItem(line);
@@ -137,5 +138,54 @@ void paintscene::eraseItemsAt(const QPointF &position, qreal radius)
         }
     }
 }
+
+void paintscene::floodFill(const QPointF &pos)
+{
+    QGraphicsPixmapItem *pixmapItem = nullptr;
+    foreach (QGraphicsItem *item, items(pos))
+    {
+        pixmapItem = dynamic_cast<QGraphicsPixmapItem*>(item);
+        if (pixmapItem)
+            break;
+    }
+
+    if (!pixmapItem) return;
+
+    QPixmap pixmap = pixmapItem->pixmap();
+    QImage image = pixmap.toImage();
+
+    QPoint imagePos(static_cast<int>(pixmapItem->mapFromScene(pos).x()),
+                    static_cast<int>(pixmapItem->mapFromScene(pos).y()));
+
+    QColor clickedColor = image.pixelColor(imagePos);
+
+    if (clickedColor == color) return;
+
+    QStack<QPoint> stack;
+    stack.push(imagePos);
+
+    while (!stack.isEmpty()) {
+        QPoint point = stack.pop();
+        int x = point.x();
+        int y = point.y();
+
+        if (x < 0 || x >= image.width() || y < 0 || y >= image.height()) continue;
+
+        QColor currentColor = image.pixelColor(x, y);
+
+        if (currentColor != clickedColor) continue;
+
+        image.setPixelColor(x, y, color);
+
+        stack.push(QPoint(x + 1, y));
+        stack.push(QPoint(x - 1, y));
+        stack.push(QPoint(x, y + 1));
+        stack.push(QPoint(x, y - 1));
+    }
+    pixmapItem->setPixmap(QPixmap::fromImage(image));
+    this->update();
+}
+
+
 
 

@@ -902,6 +902,13 @@
             </layout>
            </item>
            <item>
+            <widget class="QPushButton" name="b_RGB">
+             <property name="text">
+              <string>RGB</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <widget class="QPushButton" name="b_chouseAnotherImage">
              <property name="text">
               <string>Сhoose another image</string>

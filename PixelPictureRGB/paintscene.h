@@ -11,6 +11,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QPainterPath>
+#include <QStack>
 
 class paintscene : public QGraphicsScene {
     Q_OBJECT
@@ -21,9 +22,10 @@ public:
 
     void setPenMode(bool enabled);
     void setEraserMode(bool enabled);
-    void setPenColor(const QColor& color);
+    void setColor(const QColor& color);
     void setSizePx(const int& size);
     void setPipetteMode(bool enabled);
+    void setFillingMode(bool enabled);
 
 signals:
     void isPaintingNow(bool isPainting);
@@ -37,16 +39,18 @@ protected:
 
 private:
     QPointF previousPoint;
-    bool isPenModeActive = false;
-    bool isEraserModeActive = false;
-    bool isPipetteModeActive = false;
+    bool isPenModeActive;
+    bool isEraserModeActive;
+    bool isPipetteModeActive;
+    bool isFillingModeActive;
     bool isPainting;
     QList<QGraphicsItem *> drawnItems;
-    QColor penColor;
+    QColor color;
     int sizePx;
 
 
     void eraseItemsAt(const QPointF &position, qreal radius);
+    void floodFill(const QPointF &pos);
 };
 
 #endif // PAINTSCENE_H
